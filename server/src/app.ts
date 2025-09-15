@@ -14,11 +14,9 @@ const validateRegisterInput = (
   res: Response,
   next: NextFunction,
 ) => {
-  if (
-    !req.body.email ||
-    typeof req.body.email !== 'string' ||
-    !req.body.email.includes('@')
-  ) {
+  const { email } = req.query;
+
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
     res.status(400).send({ error: 'Correo electrónico invalido.' });
     return;
   }
@@ -26,7 +24,8 @@ const validateRegisterInput = (
 };
 
 app.post('/register', validateRegisterInput, (req: Request, res: Response) => {
-  const { email } = req.body;
+  const { email } = req.query;
+
   try {
     pool.query('INSERT INTO registers (email) VALUES (?)', [email]);
     res.status(200).send({ message: 'Correo registrado correctamente.' });
